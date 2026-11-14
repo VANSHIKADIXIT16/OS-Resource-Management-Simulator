@@ -147,3 +147,113 @@ def test_duplicate_process_ids():
 
     with pytest.raises(ValueError):
         round_robin_scheduling(processes, 2)
+
+
+
+from modules.memory_management import memory_allocation
+
+
+@pytest.fixture
+def sample_memory():
+    blocks = [100, 500, 200, 300, 600]
+
+    processes = [
+        {"pid": "P1", "size": 212},
+        {"pid": "P2", "size": 417},
+        {"pid": "P3", "size": 112},
+        {"pid": "P4", "size": 426}
+    ]
+
+    return blocks, processes
+
+
+# Test 1-3: Verify all three algorithms
+@pytest.mark.parametrize(
+    "algorithm, expected_blocks, expected_success, expected_fragmentation, expected_free",
+    [
+        ("First Fit", ["B2", "B5", "B3", None], 3, 559, 400),
+        ("Best Fit", ["B4", "B2", "B3", "B5"], 4, 433, 100),
+        ("Worst Fit", ["B5", "B2", "B4", None], 3, 659, 300)
+    ]
+)
+def test_memory_algorithms(
+    sample_memory,
+    algorithm,
+    expected_blocks,
+    expected_success,
+    expected_fragmentation,
+    expected_free
+):
+    blocks, processes = sample_memory
+
+    result = memory_allocation(blocks, processes, algorithm)
+
+    actual_blocks = [
+        item["block"] for item in result["results"]
+    ]
+
+    assert actual_blocks == expected_blocks
+    assert result["successful_allocations"] == expected_success
+    assert result["failed_allocations"] == 4 - expected_success
+
+    assert (
+        result["total_internal_fragmentation"]
+        == expected_fragmentation
+    )
+
+    assert result["remaining_free_memory"] == expected_free
+
+
+# Test 4: Empty memory blocks
+def test_empty_memory_blocks():
+    with pytest.raises(ValueError):
+        memory_allocation([], [{"pid": "P1", "size": 100}], "First Fit")
+
+
+# Test 5: Empty processes
+def test_empty_processes():
+    with pytest.raises(ValueError):
+        memory_allocation([100, 200], [], "First Fit")
+
+
+# Test 6: Invalid allocation algorithm
+def test_invalid_algorithm():
+    with pytest.raises(ValueError):
+        memory_allocation(
+            [100, 200],
+            [{"pid": "P1", "size": 50}],
+            "Invalid Fit"
+        )
+
+
+# Test 7-10: Invalid memory block sizes
+@pytest.mark.parametrize("size", [-100, 0, 1.5, True])
+def test_invalid_block_sizes(size):
+    with pytest.raises(ValueError):
+        memory_allocation(
+            [size],
+            [{"pid": "P1", "size": 50}],
+            "First Fit"
+        )
+
+
+# Test 11-14: Invalid process memory requests
+@pytest.mark.parametrize("size", [-100, 0, 1.5, True])
+def test_invalid_process_sizes(size):
+    with pytest.raises(ValueError):
+        memory_allocation(
+            [100, 200],
+            [{"pid": "P1", "size": size}],
+            "First Fit"
+        )
+
+
+# Test 15: Duplicate process IDs
+def test_duplicate_memory_process_ids():
+    processes = [
+        {"pid": "P1", "size": 50},
+        {"pid": "P1", "size": 100}
+    ]
+
+    with pytest.raises(ValueError):
+        memory_allocation([100, 200], processes, "First Fit")
