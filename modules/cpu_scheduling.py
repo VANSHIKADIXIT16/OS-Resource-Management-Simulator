@@ -1,5 +1,43 @@
 from collections import deque
 
+
+def _validate_processes(processes):
+    """Validate CPU process records shared by all scheduling algorithms."""
+    if not isinstance(processes, (list, tuple)) or not processes:
+        raise ValueError("Process list cannot be empty.")
+
+    required_fields = {"pid", "arrival_time", "burst_time"}
+    seen_pids = set()
+
+    for process in processes:
+        if not isinstance(process, dict) or not required_fields.issubset(process):
+            raise ValueError(
+                "Each process needs pid, arrival_time and burst_time."
+            )
+
+        pid = process["pid"]
+        arrival = process["arrival_time"]
+        burst = process["burst_time"]
+        if not isinstance(pid, str) or not pid.strip():
+            raise ValueError("Process ID must be a non-empty string.")
+        if pid in seen_pids:
+            raise ValueError("Process IDs must be unique.")
+        seen_pids.add(pid)
+
+        if (
+            not isinstance(arrival, int)
+            or isinstance(arrival, bool)
+            or arrival < 0
+        ):
+            raise ValueError("Arrival time must be a non-negative integer.")
+        if (
+            not isinstance(burst, int)
+            or isinstance(burst, bool)
+            or burst <= 0
+        ):
+            raise ValueError("Burst time must be a positive integer.")
+
+
 def fcfs_scheduling(processes):
     """
     First Come First Serve CPU Scheduling.
@@ -8,15 +46,7 @@ def fcfs_scheduling(processes):
     pid, arrival_time, burst_time
     """
 
-    if not processes:
-        raise ValueError("Process list cannot be empty.")
-
-    for process in processes:
-        if process["arrival_time"] < 0:
-            raise ValueError("Arrival time cannot be negative.")
-
-        if process["burst_time"] <= 0:
-            raise ValueError("Burst time must be greater than zero.")
+    _validate_processes(processes)
 
     # Sort processes by arrival time.
     # Original order is preserved for equal arrival times.
@@ -147,15 +177,7 @@ def sjf_scheduling(processes):
     Selects the shortest available process.
     """
 
-    if not processes:
-        raise ValueError("Process list cannot be empty.")
-
-    for process in processes:
-        if process["arrival_time"] < 0:
-            raise ValueError("Arrival time cannot be negative.")
-
-        if process["burst_time"] <= 0:
-            raise ValueError("Burst time must be greater than zero.")
+    _validate_processes(processes)
 
     # Keep original order as a tie-breaker.
     remaining = [
@@ -200,7 +222,7 @@ def sjf_scheduling(processes):
             )
         )
 
-        original_index, process = selected
+        _, process = selected
 
         pid = process["pid"]
         arrival = process["arrival_time"]
@@ -270,38 +292,10 @@ def round_robin_scheduling(processes, time_quantum):
     Processes execute for a fixed time quantum.
     """
 
-    if not processes:
-        raise ValueError("Process list cannot be empty.")
+    _validate_processes(processes)
 
     if not isinstance(time_quantum, int) or isinstance(time_quantum, bool) or time_quantum <= 0:
         raise ValueError("Time quantum must be a positive integer.")
-
-    required_fields = {"pid", "arrival_time", "burst_time"}
-    seen_pids = set()
-
-    for process in processes:
-        if not required_fields.issubset(process):
-            raise ValueError("Each process needs pid, arrival_time and burst_time.")
-
-        if not isinstance(process["arrival_time"], int) or isinstance(process["arrival_time"], bool):
-            raise ValueError("Arrival time must be an integer.")
-
-        if not isinstance(process["burst_time"], int) or isinstance(process["burst_time"], bool):
-            raise ValueError("Burst time must be an integer.")
-
-        if process["arrival_time"] < 0:
-            raise ValueError("Arrival time cannot be negative.")
-
-        if process["burst_time"] <= 0:
-            raise ValueError("Burst time must be greater than zero.")
-
-        if not isinstance(process["pid"], str) or not process["pid"].strip():
-            raise ValueError("Process ID must be a non-empty string.")
-
-        if process["pid"] in seen_pids:
-            raise ValueError("Process IDs must be unique.")
-
-        seen_pids.add(process["pid"])
 
     # Sort processes by arrival time.
     ordered = sorted(

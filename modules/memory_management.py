@@ -2,10 +2,10 @@
 def validate_memory_input(blocks, processes):
     """Validate memory blocks and process requests."""
 
-    if not blocks:
+    if not isinstance(blocks, (list, tuple)) or not blocks:
         raise ValueError("Memory blocks cannot be empty.")
 
-    if not processes:
+    if not isinstance(processes, (list, tuple)) or not processes:
         raise ValueError("Process list cannot be empty.")
 
     if any(
@@ -152,7 +152,15 @@ def memory_allocation(blocks, processes, algorithm):
         "total_allocated_memory": total_allocated,
         "total_internal_fragmentation": total_fragmentation,
         "remaining_free_memory": remaining_free,
-        "memory_utilization": memory_utilization
+        "memory_utilization": memory_utilization,
+        "requested_memory_utilization": (
+            sum(
+                item["required_memory"]
+                for item in results
+                if item["status"] == "Allocated"
+            )
+            / total_memory * 100
+        )
     }
 
 

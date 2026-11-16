@@ -1,0 +1,4 @@
+algorithm,initial_head,disk_tracks,request_count,service_order,movement_path,total_head_movement_tracks,average_movement_per_request_tracks,scan_direction
+FCFS,53,200,8,"[98, 183, 37, 122, 14, 124, 65, 67]","[53, 98, 183, 37, 122, 14, 124, 65, 67]",640,80.0,
+SSTF,53,200,8,"[65, 67, 37, 14, 98, 122, 124, 183]","[53, 65, 67, 37, 14, 98, 122, 124, 183]",236,29.5,
+SCAN,53,200,8,"[65, 67, 98, 122, 124, 183, 37, 14]","[53, 65, 67, 98, 122, 124, 183, 199, 37, 14]",331,41.375,right

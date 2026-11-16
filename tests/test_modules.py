@@ -149,6 +149,49 @@ def test_duplicate_process_ids():
         round_robin_scheduling(processes, 2)
 
 
+@pytest.mark.parametrize(
+    "algorithm",
+    [fcfs_scheduling, sjf_scheduling, round_robin_scheduling],
+)
+def test_cpu_algorithms_reject_duplicate_ids_and_boolean_times(algorithm):
+    duplicate_ids = [
+        {"pid": "P1", "arrival_time": 0, "burst_time": 2},
+        {"pid": "P1", "arrival_time": 1, "burst_time": 1},
+    ]
+    invalid_time = [
+        {"pid": "P1", "arrival_time": False, "burst_time": 2},
+    ]
+    with pytest.raises(ValueError):
+        if algorithm is round_robin_scheduling:
+            algorithm(duplicate_ids, 1)
+        else:
+            algorithm(duplicate_ids)
+    with pytest.raises(ValueError):
+        if algorithm is round_robin_scheduling:
+            algorithm(invalid_time, 1)
+        else:
+            algorithm(invalid_time)
+
+
+@pytest.mark.parametrize(
+    "algorithm",
+    [fcfs_scheduling, sjf_scheduling, round_robin_scheduling],
+)
+def test_cpu_algorithms_include_initial_idle_time(algorithm):
+    processes = [{"pid": "P1", "arrival_time": 4, "burst_time": 2}]
+    if algorithm is round_robin_scheduling:
+        result = algorithm(processes, 2)
+    else:
+        result = algorithm(processes)
+
+    assert result["gantt_chart"] == [
+        {"pid": "IDLE", "start": 0, "end": 4},
+        {"pid": "P1", "start": 4, "end": 6},
+    ]
+    assert result["results"][0]["completion_time"] == 6
+    assert result["cpu_utilization"] == pytest.approx(100 / 3)
+
+
 
 from modules.memory_management import memory_allocation
 
@@ -202,6 +245,14 @@ def test_memory_algorithms(
     )
 
     assert result["remaining_free_memory"] == expected_free
+    expected_payload = {
+        "First Fit": 741,
+        "Best Fit": 1167,
+        "Worst Fit": 741,
+    }[algorithm]
+    assert result["requested_memory_utilization"] == pytest.approx(
+        expected_payload / sum(blocks) * 100
+    )
 
 
 # Test 4: Empty memory blocks

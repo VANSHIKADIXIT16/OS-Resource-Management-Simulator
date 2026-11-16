@@ -1,0 +1,22 @@
+OS Resource Management Simulator — reproducible sample trace
+
+CPU sample: P1=(0,5), P2=(1,3), P3=(2,8), P4=(3,2); RR quantum=2.
+CPU metrics: waiting=turnaround minus burst; CPU utilization=busy time divided by elapsed time from time 0 to final completion.
+FCFS: average waiting 5.75, average turnaround 10.25, CPU utilization 100.00%; Gantt: P1[0-5] | P2[5-8] | P3[8-16] | P4[16-18].
+SJF (Non-preemptive): average waiting 4.00, average turnaround 8.50, CPU utilization 100.00%; Gantt: P1[0-5] | P4[5-7] | P2[7-10] | P3[10-18].
+Round Robin: average waiting 7.25, average turnaround 11.75, CPU utilization 100.00%; Gantt: P1[0-2] | P2[2-4] | P3[4-6] | P1[6-8] | P4[8-10] | P2[10-11] | P3[11-13] | P1[13-14] | P3[14-16] | P3[16-18].
+
+Memory sample: fixed blocks [100, 500, 200, 300, 600] KB; requests [212, 417, 112, 426] KB.
+Memory metrics: internal fragmentation is occupied partition space unused by its process; free memory is unallocated whole partitions. These are reported separately.
+First Fit: 3 successful, 1 failed, 559 KB internal fragmentation, 400 KB free, 76.47% occupied-partition utilization; allocations: [{"pid": "P1", "required_memory": 212, "block": "B2", "allocated_memory": 500, "fragmentation": 288, "status": "Allocated"}, {"pid": "P2", "required_memory": 417, "block": "B5", "allocated_memory": 600, "fragmentation": 183, "status": "Allocated"}, {"pid": "P3", "required_memory": 112, "block": "B3", "allocated_memory": 200, "fragmentation": 88, "status": "Allocated"}, {"pid": "P4", "required_memory": 426, "block": null, "allocated_memory": 0, "fragmentation": 0, "status": "Not Allocated"}].
+Best Fit: 4 successful, 0 failed, 433 KB internal fragmentation, 100 KB free, 94.12% occupied-partition utilization; allocations: [{"pid": "P1", "required_memory": 212, "block": "B4", "allocated_memory": 300, "fragmentation": 88, "status": "Allocated"}, {"pid": "P2", "required_memory": 417, "block": "B2", "allocated_memory": 500, "fragmentation": 83, "status": "Allocated"}, {"pid": "P3", "required_memory": 112, "block": "B3", "allocated_memory": 200, "fragmentation": 88, "status": "Allocated"}, {"pid": "P4", "required_memory": 426, "block": "B5", "allocated_memory": 600, "fragmentation": 174, "status": "Allocated"}].
+Worst Fit: 3 successful, 1 failed, 659 KB internal fragmentation, 300 KB free, 82.35% occupied-partition utilization; allocations: [{"pid": "P1", "required_memory": 212, "block": "B5", "allocated_memory": 600, "fragmentation": 388, "status": "Allocated"}, {"pid": "P2", "required_memory": 417, "block": "B2", "allocated_memory": 500, "fragmentation": 83, "status": "Allocated"}, {"pid": "P3", "required_memory": 112, "block": "B4", "allocated_memory": 300, "fragmentation": 188, "status": "Allocated"}, {"pid": "P4", "required_memory": 426, "block": null, "allocated_memory": 0, "fragmentation": 0, "status": "Not Allocated"}].
+
+Deadlock sample: Banker’s safe-state check.
+State: Safe; safe sequence: P1 -> P3 -> P0 -> P2 -> P4.
+
+Disk sample: head 53, tracks 0–199, requests [98, 183, 37, 122, 14, 124, 65, 67], SCAN direction right.
+Disk metrics: total movement includes SCAN boundary travel; average movement divides by request count.
+FCFS: service order [98, 183, 37, 122, 14, 124, 65, 67], movement path [53, 98, 183, 37, 122, 14, 124, 65, 67], 640 tracks total, 80.00 tracks/request.
+SSTF: service order [65, 67, 37, 14, 98, 122, 124, 183], movement path [53, 65, 67, 37, 14, 98, 122, 124, 183], 236 tracks total, 29.50 tracks/request.
+SCAN: service order [65, 67, 98, 122, 124, 183, 37, 14], movement path [53, 65, 67, 98, 122, 124, 183, 199, 37, 14], 331 tracks total, 41.38 tracks/request.

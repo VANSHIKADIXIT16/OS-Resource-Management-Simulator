@@ -3,3 +3,8 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .DS_Store
+logs/*.log
+
+# Local Streamlit credentials and secrets
+.streamlit/secrets.toml
+.streamlit/credentials.toml
