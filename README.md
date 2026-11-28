@@ -53,8 +53,7 @@ reported and the menu remains available.
 
 ## Interactive web dashboard (optional)
 
-A local Streamlit dashboard is included. It calls the same Python algorithm
-functions as the terminal app; it does not duplicate or replace them.
+A local Streamlit dashboard is included, featuring a custom glassmorphism theme (`assets/style.css`), ambient SVG styling (`assets/butterfly.svg`), and an upgraded sidebar status panel. It calls the same Python algorithm functions as the terminal app; it does not duplicate or replace them.
 
 Install dependencies and launch:
 
@@ -70,7 +69,7 @@ available with `./run.sh`.
 
 Dashboard pages include Overview, CPU Scheduling, Memory Management, Deadlock
 Safety, Disk Scheduling, Performance Reports, and Sample Data. The algorithm
-pages allow interactive inputs and display results. The Sample Data page can
+pages allow interactive inputs and display real-time results and Gantt charts. The Sample Data page can
 upload replacement JSON files into `data/`; back up originals before replacing
 them. The dashboard runs locally on your Mac, not as a public hosted website.
 
@@ -206,51 +205,50 @@ printf '6\n' | ./run.sh
 ```text
 .
 ├── AGENTS.md
-├── analysis/performance.py
+├── analysis/performance.py     # Comparison generation and automated reporting
+├── assets/                     # Custom UI theme (style.css) and ambient graphics
+├── dashboard.py                # Streamlit interactive web dashboard
+├── dashboard.sh                # Streamlit dashboard launcher script
 ├── data/                       # Reusable JSON sample inputs
-├── docs/                       # Design and final implementation report
+├── docs/                       # Design, implementation, and dashboard guides
 ├── logs/                       # Local activity.log (ignored by Git)
 ├── main.py                     # Integrated terminal menu
 ├── modules/                    # CPU, memory, deadlock, disk, logging
 ├── reports/                    # Reproducible CSV, PNG, and text outputs
-├── screenshots/                # Manual capture instructions; no fabricated images
-├── tests/
+├── tests/                      # Automated pytest suite (70 test cases)
 ├── requirements.txt
-└── run.sh
+└── run.sh                      # Terminal application launcher script
 ```
 
 The workflow is:
 
 ```mermaid
 flowchart LR
-    User --> Menu[main.py menu]
+    User --> Menu[main.py CLI Menu]
+    User --> Dashboard[dashboard.py Streamlit UI]
     Menu --> Data[data JSON samples]
+    Dashboard --> Data
     Menu --> Algorithms[modules algorithms]
+    Dashboard --> Algorithms
     Algorithms --> Results[validated result dictionaries]
     Results --> Menu
+    Results --> Dashboard
     Menu --> Log[logs/activity.log]
+    Dashboard --> Log
     Analysis[analysis/performance.py] --> Data
     Analysis --> Algorithms
     Analysis --> Reports[reports CSV, charts, trace]
 ```
 
-## Manual screenshots
-
-No screenshots are generated or claimed by this project. Capture the requested
-VS Code/Terminal views yourself and save them in `screenshots/`. See
-[`screenshots/README.md`](screenshots/README.md) for suggested filenames and
-the exact screens to capture.
-
 ## Git workflow
 
-The local changes are deliberately left uncommitted and unpushed. Review first:
+Changes follow a structured feature-branch and pull request workflow:
 
-```bash
-git status --short --branch
-git diff --stat
-git diff
-```
-
-Only after reviewing and explicitly approving the changes should you stage
-specific files, commit, and push to the existing private repository. Do not
-stage `venv/`, logs, caches, credentials, or unrelated work.
+1. Check local changes against the latest commit:
+   ```bash
+   git status --short --branch
+   git diff
+   ```
+2. Track changes with a dedicated GitHub issue.
+3. Implement on a feature branch, run tests, and open a PR with a clear, imperative caption.
+4. Review, verify test passes, and merge into `main`. Do not push unreviewed changes directly to `main`.
