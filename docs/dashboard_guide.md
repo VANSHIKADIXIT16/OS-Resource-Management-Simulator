@@ -13,6 +13,7 @@ Copy the files from this add-on into the existing project:
 
 - `dashboard.py` → project root, beside `main.py`
 - `dashboard.sh` → project root, beside `run.sh`
+- `assets/` → `style.css` (custom UI glass theme) and `butterfly.svg` (ambient graphic)
 - `requirements.txt` → replace the existing root file with the supplied updated file
 - `README.md` → replace the existing root file with the supplied updated file
 - `.gitignore` → replace the existing root file with the supplied updated file
