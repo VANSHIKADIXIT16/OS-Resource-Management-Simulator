@@ -1,0 +1,89 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 440">
+  <defs>
+    <linearGradient id="wingPink" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff0f8"></stop>
+      <stop offset="45%" stop-color="#f6b8d8"></stop>
+      <stop offset="100%" stop-color="#c77bc4"></stop>
+    </linearGradient>
+
+    <linearGradient id="wingLilac" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbe8ff"></stop>
+      <stop offset="50%" stop-color="#d7b4f4"></stop>
+      <stop offset="100%" stop-color="#a78bdf"></stop>
+    </linearGradient>
+
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff7fc"></stop>
+      <stop offset="100%" stop-color="#d78bbd"></stop>
+    </linearGradient>
+
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="9" result="blur"></feGaussianBlur>
+      <feMerge>
+        <feMergeNode in="blur"></feMergeNode>
+        <feMergeNode in="SourceGraphic"></feMergeNode>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g opacity="0.9" filter="url(#glow)">
+    <!-- Upper left wing -->
+    <path d="M207 215
+         C165 150 65 45 36 76
+         C-4 119 91 221 183 248
+         C192 238 201 227 207 215Z" fill="url(#wingPink)" stroke="#ffe6f5" stroke-width="2"></path>
+
+    <!-- Upper right wing -->
+    <path d="M213 215
+         C250 142 321 20 365 38
+         C410 61 355 190 235 250
+         C226 238 219 226 213 215Z" fill="url(#wingLilac)" stroke="#fff0fb" stroke-width="2"></path>
+
+    <!-- Lower left wing -->
+    <path d="M190 241
+         C123 221 42 235 54 302
+         C65 364 151 372 205 269
+         C202 259 197 249 190 241Z" fill="url(#wingLilac)" stroke="#ffe6f5" stroke-width="2"></path>
+
+    <!-- Lower right wing -->
+    <path d="M230 242
+         C289 218 378 236 365 307
+         C351 370 268 365 215 269
+         C218 258 224 249 230 242Z" fill="url(#wingPink)" stroke="#fff0fb" stroke-width="2"></path>
+
+    <!-- Wing veins -->
+    <g fill="none" stroke="#fff5fc" stroke-width="1.5" opacity="0.7">
+      <path d="M207 220 L72 96"></path>
+      <path d="M203 229 L111 177"></path>
+      <path d="M198 237 L148 225"></path>
+      <path d="M214 220 L348 62"></path>
+      <path d="M219 230 L320 151"></path>
+      <path d="M225 239 L287 221"></path>
+      <path d="M194 251 L81 279"></path>
+      <path d="M198 262 L139 337"></path>
+      <path d="M226 251 L338 282"></path>
+      <path d="M221 263 L280 337"></path>
+    </g>
+  </g>
+
+  <!-- Butterfly body -->
+  <g fill="url(#body)" stroke="#fff0fb" stroke-width="1.5">
+    <ellipse cx="210" cy="245" rx="9" ry="48"></ellipse>
+    <circle cx="210" cy="190" r="12"></circle>
+  </g>
+
+  <!-- Antennae -->
+  <g fill="none" stroke="#ffe6f5" stroke-width="3" stroke-linecap="round">
+    <path d="M206 184 C185 155 176 145 166 143"></path>
+    <path d="M214 184 C235 155 244 145 254 143"></path>
+  </g>
+
+  <!-- Tiny highlights -->
+  <g fill="#ffffff" opacity="0.9">
+    <circle cx="94" cy="130" r="4"></circle>
+    <circle cx="324" cy="112" r="4"></circle>
+    <circle cx="125" cy="290" r="3"></circle>
+    <circle cx="305" cy="290" r="3"></circle>
+  </g>
+</svg>

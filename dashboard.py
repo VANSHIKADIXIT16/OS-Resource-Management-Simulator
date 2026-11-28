@@ -4,6 +4,7 @@ Run from the project root: ./dashboard.sh
 """
 import json
 from pathlib import Path
+import base64
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -22,6 +23,13 @@ REPORTS = ROOT / "reports"
 LOG = configure_activity_logger(ROOT)
 
 st.set_page_config(page_title="OS Resource Management", page_icon="🖥️", layout="wide")
+
+# Load the reusable pink Y2K glass theme from assets/style.css.
+STYLE_PATH = ROOT / "assets" / "style.css"
+if STYLE_PATH.exists():
+    st.markdown(f"<style>{STYLE_PATH.read_text(encoding='utf-8')}</style>",
+                unsafe_allow_html=True)
+
 st.markdown("""
 <style>
 .block-container {padding-top: 1.6rem; padding-bottom: 2rem;}
@@ -275,16 +283,69 @@ def data_page():
                 except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
                     st.error(f"Could not save JSON: {exc}")
 
+# Load butterfly SVG from assets folder
+BUTTERFLY_PATH = ROOT / "assets" / "butterfly.svg"
+
+if BUTTERFLY_PATH.exists():
+    st.markdown(
+        f"""
+        <div class="ambient-butterfly">
+            <img src="data:image/svg+xml;base64,{
+                base64.b64encode(BUTTERFLY_PATH.read_bytes()).decode("utf-8")
+            }" />
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 with st.sidebar:
-    st.title("🖥️ OS Simulator")
-    st.caption("Resource management lab")
-    selected = st.radio("Navigation", [
-        "Overview", "CPU Scheduling", "Memory Management", "Deadlock Safety",
-        "Disk Scheduling", "Performance Reports", "Sample Data"
-    ])
-    st.divider()
-    st.caption("Local dashboard · Shared Python backend")
+    # Sidebar brand panel. HTML is rendered by Streamlit (not displayed as code).
+    st.markdown(
+        """
+        <div class="sidebar-brand">
+            <div class="sidebar-window-dots">
+                <span class="dot-pink"></span>
+                <span class="dot-lilac"></span>
+                <span class="dot-green"></span>
+            </div>
+            <div class="sidebar-brand-icon">✦</div>
+            <div class="sidebar-brand-title">OS <span>Simulator</span></div>
+            <div class="sidebar-brand-subtitle">RESOURCE MANAGEMENT LAB</div>
+        </div>
+        <div class="sidebar-section-label">WORKSPACE</div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    selected = st.radio(
+        "Navigation",
+        [
+            "Overview",
+            "CPU Scheduling",
+            "Memory Management",
+            "Deadlock Safety",
+            "Disk Scheduling",
+            "Performance Reports",
+            "Sample Data",
+        ],
+        label_visibility="collapsed",
+    )
+
+    st.markdown(
+        """
+        <div class="sidebar-footer">
+            <div class="sidebar-footer-line"></div>
+            <div class="sidebar-footer-title">✧ SIMULATOR STATUS</div>
+            <div class="sidebar-status">
+                <span class="status-light"></span> Backend ready
+            </div>
+            <div class="sidebar-footer-note">
+                Local dashboard<br />Shared Python backend
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 {
     "Overview": overview_page,
